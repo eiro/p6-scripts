@@ -1,0 +1,97 @@
+#! env perl
+use Eirotic;
+
+# see test suite for help
+#
+# another, alternative syntax for columns:
+
+# 3 3 6 * 3
+# 2 4 6 * 5
+
+BEGIN {
+    my $IDENT = '[a-zA-Z0-9_-]+';
+
+    sub rule ( $ret, $name, $regexp ) {
+	no strict 'refs';
+	*{$name} =
+	'hash' eq $ret ? sub { /$regexp/xgc ? %+ : () } :
+	'list' eq $ret ? sub { /$regexp/xgc }           :
+	do {...}
+    }
+
+    rule qw( hash repeat   ) => qr{ \G    (?<repeat> \d+    ) \* }x;
+    rule qw( hash name     ) => qr{ \G    (?<name>   $IDENT )    }x;
+    rule qw( hash id       ) => qr{ \G \# (?<id>     $IDENT )    }x;
+    rule qw( list classes  ) => qr{ \G \. ($IDENT)  }x;
+
+};
+
+sub gatherClasses {
+    my @c = classes;
+    @c ? (class => \@c) : () }
+
+sub tag;
+
+sub children {
+    m(\G\s*$)gc ? ()
+    : m(\G/)gc  ? (children => +{tag})
+    : die "can't parse remainings: ", m(\G.*)gc }
+
+sub tag      {
+    repeat, name, id
+    , gatherClasses
+    , children }
+
+
+sub _render_start {
+    join " ", "<$$_{name}"
+    , (map qq(id="$_"), $$_{id} // ())
+    , (map +(sprintf 'class="%s"', join " ", @$_)
+	, $$_{class}//()) }
+
+sub render :prototype(_);
+sub render :prototype(_) {
+    my $tag = {qw( repeat 1 name div ), %{shift,}};
+    my @r = map {
+	_render_start
+	, ">\n"
+	, (map render, $$_{children}//() )
+	, "</$$_{name}>\n";
+    } $tag;
+    (@r)x $$tag{repeat}
+}
+
+caller or say render {map tag, do {local $/; <>}};
+
+__END__
+#! env perl6
+use v6;
+use Test;
+
+sub prefix:<✓> (Match $m) {
+}
+
+grammar HTmmmm {
+    token ident { <[ _ a..z A..Z 0..9 ]>+ }
+    token times { <(\d+)> '*' }
+
+    rule TOP  {  ^ <tag>? $ }
+
+    rule tag {
+	<times>? <name=ident> <attr>*
+	[ '/' <children=tag> ]?
+    }
+    rule attr {
+	'#'<id=ident> |
+	'.'<class=ident>
+    }
+}
+
+HTmmmm.parse("4*foo").perl.say;
+# say ~HTmmmm.parse("4*foo")<tag><name>;
+# say ~HTmmmm.parse("foo")<tag><name>;
+# say ~HTmmmm.parse("4*foo/bar")<tag><children>;
+# say ~HTmmmm.parse("4*foo/2*bar/bang")<tag><children><children><name>;
+# say ~HTmmmm.parse("foo.bar.lol#x")<tag><attr>[*].gist
+
+#$*ARGFILES.slurp.perl.say;
