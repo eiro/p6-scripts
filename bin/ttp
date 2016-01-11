@@ -1,0 +1,60 @@
+#! env perl
+
+$was=-1; # the previous level was ...
+
+sub downstair {
+    $files = pop @stack;
+    $path  = join "", map $$_[-1], @stack;
+    print "$path$_\n" for @$files;
+    @stack && pop @{$stack[-1]};
+}
+
+while (<>) {
+    s/[\r\n]*?//g;
+    $lvl = 1+ map "", /\G {3}/gc; # count the indentation level
+    ($base) = /\G ?(.*)/;         # store the name of the file or dir
+    if    ( $lvl > $was  ) { push @stack, $top = [$base] }
+    elsif ( $lvl == $was ) { push @$top, $base }
+    else {
+        downstair while +@stack > $lvl;
+        push @{$top = $stack[-1]}, $base;
+    }
+    $was = $lvl;
+}
+
+downstair while @stack
+
+=head1 SYNOPSIS
+
+tree.py is a command that dumps a directory hierachy this way (as someone
+reports).
+
+
+    /foo
+       /bar
+	  /a.mp3
+	  /b.jpg
+       /baz
+	  /c.mp3
+	  /d.jpg
+	  /baz
+	     /e.mp3
+    /rad
+       /bar
+	  /f.mp3
+	  /g.jpg
+       /baz
+	  /h.mp3
+	  /i.jpg
+
+ttp (as "tree to path") convert this format into a list of POSIX path.
+
+=head1 TODO
+
+this program starts as a perl oneliner (no strict, no warnings and so on).
+improve quality required. test suite is welcome too.
+
+(or maybe just rewrite in perl6)
+
+
+=cut
