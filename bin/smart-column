@@ -1,0 +1,11 @@
+#! env perl6
+
+sub padded-cols ($sep,@sheet) {
+    sub record-fmt( $col ) { "\%-{ [max] @sheet[*;$col].map: *.chars }s" };
+    my $fmt = @sheet[0].keys.map(&record-fmt).join: $sep;
+    @sheet.map: {$fmt.sprintf(|$_)}
+}
+
+sub MAIN (*@*ARGS,:$t='#') {
+     .say for padded-cols $t, $*ARGFILES.lines.map: (*.split($t))
+}
