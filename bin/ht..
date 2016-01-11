@@ -19,9 +19,9 @@ BEGIN {
 	do {...}
     }
 
-    rule qw( hash repeat   ) => qr{ \G    (?<repeat> \d+    ) \* }x;
-    rule qw( hash name     ) => qr{ \G    (?<name>   $IDENT )    }x;
-    rule qw( hash id       ) => qr{ \G \# (?<id>     $IDENT )    }x;
+    rule qw( hash repeat   ) => qr{ \G    (?<repeat> \d+    ) \* }xsm;
+    rule qw( hash name     ) => qr{ \G    (?<name>   $IDENT )    }xsm;
+    rule qw( hash id       ) => qr{ \G \# (?<id>     $IDENT )    }xsm;
     rule qw( list classes  ) => qr{ \G \. ($IDENT)  }x;
 
 };
@@ -38,10 +38,10 @@ sub children {
     : die "can't parse remainings: ", m(\G.*)gc }
 
 sub tag      {
+    m(\G\s*)xmsgc;
     repeat, name, id
     , gatherClasses
     , children }
-
 
 sub _render_start {
     join " ", "<$$_{name}"
