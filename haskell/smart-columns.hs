@@ -9,4 +9,4 @@ reformat sheet =
     let ns= map (maximum . map length)  $ transpose sheet
     in map (concat . intersperse " # ") $ map (zipWith pad ns) sheet
 
-main = interact $ unlines . reformat . (map (splitOn "#") ) . lines
+main = interact $ unlines . reformat . (map $ splitOn "#") . lines
