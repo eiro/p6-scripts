@@ -2,9 +2,7 @@ import Data.List.Split (splitOn)
 import Data.List
 import System.Environment
 
-pad n s | r > 0     = s ++ replicate r ' '
-        | otherwise = s
-        where r = n - length s
+pad n s = take n $ s ++ repeat ' '
 
 main = do
     args <- getArgs
@@ -13,4 +11,4 @@ main = do
         reformat sheet =
             let ns= map (maximum . map length)    $ transpose sheet
             in map (concat . intersperse between) $ map (zipWith pad ns) sheet
-    interact $ unlines . reformat . (map $ splitOn sep) . lines
+    interact $ unlines . reformat . map (splitOn sep) . lines
