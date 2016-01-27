@@ -10,5 +10,5 @@ main = do
         between = " " ++ sep ++ " "
         reformat sheet =
             let ns= map (maximum . map length)    $ transpose sheet
-            in map (concat . intersperse between) $ map (zipWith pad ns) sheet
+            in map (concat . intersperse between . zipWith pad ns) sheet
     interact $ unlines . reformat . map (splitOn sep) . lines
