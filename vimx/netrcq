@@ -1,0 +1,13 @@
+#! /usr/bin/perl
+use Eirotic;
+use Net::Netrc;
+say $_//'' for Net::Netrc->lookup(@ARGV)->lpa;
+
+__END__
+
+=SYNOPSIS
+
+netrcq, give a machine, get login password and account name from your C<~/.netrc> file.
+(read C<man netrc>).
+
+

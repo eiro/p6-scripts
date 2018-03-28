@@ -1,0 +1,63 @@
+#! /usr/bin/perl
+use Eirotic;
+use IPC::Open2;
+use List::AllUtils qw< first min >;
+
+my @command = splice @ARGV;
+
+# my $separator =
+#     first {$ARGV[$_] eq '--'} 0..$#ARGV;
+# my @command = do {
+#     if ( defined $separator ) {
+#         splice @ARGV,$separator,1;
+#         splice @ARGV,$separator;
+#     } else {
+#         splice @ARGV
+#     }
+# };
+
+my @lines  = <>;
+my $min    = min map { /^(\s*)/ ; length $1 } @lines;
+@lines     = map {substr $_, $min } @lines;
+my $indent = sprintf "%${min}s", '';
+
+open2 my ( $out, $in ) , @command;
+print $in @lines;
+close $in;
+print map "$indent$_", <$out>;
+
+__END__
+
+=head1 SYNOPSIS
+
+hident means "hide indent" is wraps a filter by hidding the first level of
+indent to it.
+
+the main usecase is to use C<pug -P> as C<'fp'> in vim:
+
+    //- indented code
+        ul
+            li first
+            li second
+
+will produce
+
+    Error: Pug:2:1
+        1|     ul
+      > 2|         li first
+    -------^
+        3|         li second
+        4|
+
+    unexpected token "indent"
+
+and you need to remove the first level of indentation to fix the problem and get
+
+    <ul>
+      <li>first</li>
+      <li>second</li>
+    </ul>
+
+then you want to restore the old indent level. that's what hident does. to put it together,
+use C<set fp=hident\ pug\ -P>
+
