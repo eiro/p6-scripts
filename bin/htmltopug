@@ -1,0 +1,97 @@
+#! /usr/bin/env perl
+
+=head1 htmltopug
+
+create a pug from an html file (editing html file is boring).
+
+this script needs
+
+    * refactoring
+    * more tests
+    * documentation
+    * licence
+    * cpanization
+
+but it works :)
+
+=end
+
+package parser;
+use Sympatic;
+extends qw(HTML::Parser);
+
+# use experimental qw( declared_refs refaliasing );
+
+method handles (@actions) {
+    for (@actions) {
+        $self->handler(@$_)
+    }
+}
+
+package main;
+use Sympatic -oo;
+use JSON;
+use YAML;
+
+my $p = parser->new;
+
+# sub  start   { say YAML::Dump @_ }
+# sub  default { say YAML::Dump @_ }
+# sub  text    { say YAML::Dump @_ }
+# map $p->handler( $_ => $_ ), qw( start default text );
+
+my $i = 0;
+my $m = 2;
+
+sub trim { chomp; s/ ^\s+ | \s+$ //gxsm }
+
+$p -> handles
+    ( [declaration => method ($raw) {
+        if ( $raw =~ m{
+            ^ \s*
+            <!  doctype \s+ html \s* >
+            \s* $
+        }xi) { say "doctype html5"; return }
+
+        say YAML::Dump { declaration => \@_ };
+            exit
+        }]
+    , [ end => method ( $tag, $row ) {
+            $i-=$m; $i
+        }]
+    , [comment => sub {}]
+    , [process => sub {say "can't handle process"}]
+    , [start  => sub {
+            my ( $self, $text, $value_for, $attrs ) = @_;
+            my $end = $$value_for{'/'}
+                ? (pop @$attrs)
+                : undef;
+
+            say +((' ')x$i), $text
+            , ( @$attrs
+                ? ( '('
+                    , (join ' ', map qq<$_="$$value_for{$_}">, @$attrs )
+                    , ')')
+                : '')
+            , $end ? '/ ' : ' ';
+
+            $end or $i+=$m;
+
+        }]
+    # , [default=> sub  { say STDERR YAML::Dump { "default call with" => \@_} }]
+    , [text   => method ($text,$empty) {
+            ... if length $empty;
+            trim for $text;
+            $text && say +((' ')x$i), "| $text";
+        } ]
+    # , [start_document => sub {say "can't handle start_document when known $p" }]
+    # , [end_document => sub {say "can't handle end_document"}]
+);
+
+$p->parse(path(@ARGV)->slurp);
+
+# $p->parse
+#     ('<this id="loud" class="wow"/>it<like id="what">rocks');
+#        $p->eof or die "can't reach the end";
+
+__END__
