@@ -73,7 +73,7 @@ $p -> handles
                     , (join ' ', map qq<$_="$$value_for{$_}">, @$attrs )
                     , ')')
                 : '')
-            , $end ? '/ ' : ' ';
+            , $end ? '/' : '';
 
             $end or $i+=$m;
 
@@ -82,7 +82,7 @@ $p -> handles
     , [text   => method ($text,$empty) {
             ... if length $empty;
             trim for $text;
-            $text && say +((' ')x$i), "| $text";
+            $text && say +((' ')x$i), "|$text";
         } ]
     # , [start_document => sub {say "can't handle start_document when known $p" }]
     # , [end_document => sub {say "can't handle end_document"}]
