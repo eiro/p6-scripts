@@ -14,7 +14,7 @@ this script needs
 
 but it works :)
 
-=end
+=cut
 
 package parser;
 use Sympatic;
@@ -88,7 +88,7 @@ $p -> handles
     # , [end_document => sub {say "can't handle end_document"}]
 );
 
-$p->parse(path(@ARGV)->slurp);
+$p->parse(do {local $/; <>});
 
 # $p->parse
 #     ('<this id="loud" class="wow"/>it<like id="what">rocks');
