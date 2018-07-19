@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-use Eirotic;
+use Sympatic;
 use IPC::Open2;
 use List::AllUtils qw< first min >;
 
