@@ -51,7 +51,7 @@ $p -> handles
             ^ \s*
             <!  doctype \s+ html \s* >
             \s* $
-        }xi) { say "doctype html5"; return }
+        }xi) { say "doctype html"; return }
         say YAML::Dump { declaration => \@_ };
         exit
         }]
