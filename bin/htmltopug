@@ -43,7 +43,7 @@ my $p = parser->new;
 my $i = 0;
 my $m = 2;
 
-sub trim { chomp; s/ ^\s+ | \s+$ //gxsm }
+sub trim { chomp; s/ ^\s+ | \s+$ //gxsm ; $_ }
 
 $p -> handles
     ( [declaration => method ($raw) {
@@ -52,14 +52,16 @@ $p -> handles
             <!  doctype \s+ html \s* >
             \s* $
         }xi) { say "doctype html5"; return }
-
         say YAML::Dump { declaration => \@_ };
-            exit
+        exit
         }]
-    , [ end => method ( $tag, $row ) {
-            $i-=$m; $i
+    , [end => method ( $tag, $row ) { $i-=$m; $i }]
+    , [comment => method ($text) {
+            map +( say +((' ')x$i) , '//- ' , $_ )
+            , grep length
+            , map +( map trim , split /\r?\n/ )
+            , @$text;
         }]
-    , [comment => sub {}]
     , [process => sub {say "can't handle process"}]
     , [start  => sub {
             my ( $self, $text, $value_for, $attrs ) = @_;
@@ -78,6 +80,7 @@ $p -> handles
             $end or $i+=$m;
 
         }]
+    # should i be more stricter ?
     # , [default=> sub  { say STDERR YAML::Dump { "default call with" => \@_} }]
     , [text   => method ($text,$empty) {
             ... if length $empty;
