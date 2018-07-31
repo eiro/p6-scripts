@@ -1,0 +1,13 @@
+packager  = "Marc Chantreux <eiro@phear.org>"
+url       = "http://zsh-uze.github.io/"
+summary   = "let's build a CPAN for zsh"
+name      = "uze"
+version   = "0.0"
+build-dependencies = ["ghc"]
+dependencies = []
+configure = []
+sources = [ "https://raw.githubusercontent.com/zsh-uze/uze/master/lib/uze.zsh" ]
+build = []
+install = [ "mkdir -p %{pkg}%{bindir}", "cp uze.zsh %{pkg}%{bindir}" ]
+# not implemented yet
+post-install = []
