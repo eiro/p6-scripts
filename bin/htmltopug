@@ -82,8 +82,10 @@ $p -> handles
         }]
     # should i be more stricter ?
     # , [default=> sub  { say STDERR YAML::Dump { "default call with" => \@_} }]
-    , [text   => method ($text,$empty) {
-            ... if length $empty;
+    , [text => method ($text,$empty) {
+            if ( length $empty ) {
+                warn "2nd value is $empty when it is expected empty"
+            }
             trim for $text;
             $text && say +((' ')x$i), "|$text";
         } ]
