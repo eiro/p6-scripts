@@ -1,0 +1,4 @@
+#! /usr/bin/perl6
+$_ = $*ARGFILES.lines.cache;
+my \fmt ="%-{[max] .map: *.chars}s\n";
+.map: {printf fmt, $_};
