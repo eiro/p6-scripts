@@ -1,4 +1,4 @@
-STDIN
+ARGF
 .gets_to_end
 .split("\n")
 .map( &.split(ARGV[0]) )
