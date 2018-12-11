@@ -5,8 +5,9 @@ my %regex_by =
 ( afranke => qr/
     ^
     [[\p{White_Space}]*  # de 0 a N espace ou char "["
-    X            # un emoji
-    [\p{White_Space}]*]+ # de 1 a n (0 a n espaces )
+    X                    # un emoji
+    [\p{White_Space}]*   # 0 a n espaces
+    ]+                   # de 1 a n "]"
     $
     /x
 , eiro    => qr/
