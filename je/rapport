@@ -1,0 +1,24 @@
+#! perl6
+
+my %time_passed_on;
+
+sub parse (\entry) {
+    my ( \date , \desc ) = entry.split("\t");
+    # TODO: |% of a Z=> to pass parameters seems
+    # weird ... can we do better ?
+    DateTime.new(
+        |%( <year month day hour minute >
+                Z=> date.split(/<[-\ :]>/);
+        )).posix
+    , desc
+}
+
+%*ENV<HOME>.IO.child(".je")
+    .lines.map(*.&parse)
+    .flat.rotor(3 => -1)
+    .map: { %time_passed_on{.[1]} += (.[2] - .[0]) /60 };
+
+%time_passed_on<stop>:delete;
+for %time_passed_on.kv -> $k, $v { say "$v $k" }
+say "{ [+] %time_passed_on.values } total";
+say "{ 37 * 60 } expected";
