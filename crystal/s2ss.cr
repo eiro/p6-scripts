@@ -1,27 +1,47 @@
-# STDIN contains a set of slides.vim
-# those slides would be duplicated bullet by bullet
+# s2ss: slide to slides
 
-lines =
-    STDIN
-    .gets_to_end
-    .split("\n")
-    .tap(&.pop)
+# this is program split some slides in slides.vim format
+# into new ones to make bullets appear one by one.
 
-def render(it)
-    it.each { |l| puts l}
-end
+# s2ss < foo.slides > hidden.slides
+#
+# › slides 2 slides
+#
+#      a tool
+#         (written in crystal)
+#      a vim companion
 
-parts = [] of String
+# becomes
 
-lines.each { |l|
-    if /›/.match(l)
-        render parts unless parts.empty?
-        parts = [l]
-    else
-        render parts if //.match(l)
-        parts << l
-    end
-}
+# › slides 2 slides
+#
+#      a tool
+#         (written in crystal)
+# › slides 2 slides
+#
+#      a tool
+#         (written in crystal)
+#      a vim companion
 
-render parts
+puts typeof(STDIN)
 
+# lines = STDIN.read_lines
+# 
+# def render(it)
+#     it.each { |l| puts l}
+# end
+# 
+# parts = [] of String
+# 
+# lines.each { |l|
+#     if /›/.match(l)
+#         render parts unless parts.empty?
+#         parts = [l]
+#     else
+#         render parts if //.match(l)
+#         parts << l
+#     end
+# }
+# 
+# render parts
+# 
