@@ -1,3 +1,4 @@
+# vim: noet
 # PS1_GITSTATUS=
 # PS1_GITSTATUS_UPDATE=false
 
