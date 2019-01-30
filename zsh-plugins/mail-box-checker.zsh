@@ -5,8 +5,18 @@ mail/box () {
 	local as
 	l "ctrl-o to select, <return> to check"
 	while {true} {
-		set -- ~/local/mail/*/new/*(N:h:h:t) renater phear unistra laposte sync bgsync
-		set -- "${(u)@}"
+		# boxes order is important as fzf gives more chances to first
+		argv=(
+			# first : boxes with incoming mails
+			~/local/mail/*/new/*(N:h:h:t)
+			# second: all the mutt accounts (including those with no sync)
+			~/.mutt/account/*(:t)
+			# the actions sync (should be automated too ?)
+			# l ${${(k)functions[(I)mail/box/actions/*]}:t}
+			sync bgsync
+		)
+		# when repeating, only the first one is kept
+		argv=( ${(u)argv} )
 		local ctrl=
 		l "$@" |
 			fzf --preview='mail/check/preview' --preview-window=down --expect=ctrl-o |
