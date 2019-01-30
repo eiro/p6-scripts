@@ -1,3 +1,5 @@
+# vim: noet sts=4
+
 mail/box () {
 	setopt localoptions no{notify,monitor}
 	local as
