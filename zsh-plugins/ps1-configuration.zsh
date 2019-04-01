@@ -15,7 +15,7 @@ ps1-into-git-repo\? ()
 ps1-update () {
 	ps1-updatable\? || return
 	GOTMAIL="$(
-		set -- ~/local/mail/*/new/*(N:h:h:t)
+		set -- ~/local/mail/^Trash/new/*(N:h:h:t)
 		test -n "$*" && echo $( l $@ | uniq -c ))"
 	local it= branch=
 	PS2="▒░ ▷ "
