@@ -33,8 +33,7 @@ ps1-update () {
 	PS2="▒░ ▷ "
 	it+="▒░ %(?.%F{green}$icons[OK_ICON].%F{red}$icons[FAIL_ICON])%F{white}|%D %T|%f"
 	it+="${TMUX_PANE:+ 📺${TMUX_PANE#%} }${GOTMAIL:+ 📨 }"
-    it+=" 📝 (+$( sed '/^$/q' ~p/start |wc -l
-        )) $( tac ~/.je | sed  's/.\{17\}//;q' )"
+    it+=" 📝 (+$( sed '/^$/q' ~p/start |wc -l)) $doing_this "
 	it+=$'\n'
     argv=( yellow/black "▒░ %~" )
     { shush2 git rev-parse --abbrev-ref HEAD | read branch } &&
