@@ -8,7 +8,7 @@ mail/box () {
 		# boxes order is important as fzf gives more chances to first
 		argv=(
 			# first : boxes with incoming mails
-			~/local/mail/*/new/*(N:h:h:t)
+			~/local/mail/^Trash/new/*(N:h:h:t)
 			# second: all the mutt accounts (including those with no sync)
 			~/.mutt/account/*(:t)
 			# the actions sync (should be automated too ?)
