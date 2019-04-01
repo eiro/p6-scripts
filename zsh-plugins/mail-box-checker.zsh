@@ -19,7 +19,7 @@ mail/box () {
 		argv=( ${(u)argv} )
 		local ctrl=
 		l "$@" |
-			fzf --preview='mail/check/preview' --preview-window=down --expect=ctrl-o |
+			fzf --preview='mail/check/preview' --preview-window=left:99% --expect=ctrl-o |
 			{ read ctrl; read as }
 		case $as {
 			('') return ;;
