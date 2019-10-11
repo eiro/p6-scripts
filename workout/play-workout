@@ -1,0 +1,20 @@
+#!  /usr/bin/env zsh
+
+# the voice of sergent Hartman could be cool too
+
+step      () aplay /usr/lib/libreoffice/share/gallery/sounds/falling.wav
+congrats  () aplay /usr/lib/libreoffice/share/gallery/sounds/romans.wav
+annonce   () espeak -vfr+f2 -p 10 -s 100 "$*"
+get-ready () aplay /usr/lib/libreoffice/share/gallery/sounds/wallewal.wav
+pause     () sleep 10
+
+sed -n 's/#.*//;/[^ ]/p' "$@" |
+  while {read secs what} {
+    annonce $what
+    get-ready
+    step=$[ secs / 4 ]
+    repeat 3 { sleep $step; step& }
+    sleep $step; congrats ; pause
+  }
+
+
