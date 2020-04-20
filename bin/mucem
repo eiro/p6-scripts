@@ -1,0 +1,73 @@
+#! /bin/dash
+
+: <<\=cut
+
+=head1 NAME
+
+mucem - is a very simple TUI to compose a mail header (mblaze or mutt format)
+over fuzzy searching on a mu cfind dump.
+
+=head1 SYNOPSIS
+
+in your C<.muttrc>, add
+
+    set edit_headers=yes
+
+in your C<ftplugin/mail.vim>, add
+
+    nnoremap ,r r!mucem
+
+now you can type C<,r> from vim to select recipients.
+
+=head1 TODO
+
+    * add a cache? (when reindexing? hook something?)
+
+=head1 FAQ
+
+=head2 no undo ?
+
+nope: it's easier to fix things afterward
+
+=head2 Known Bugs
+
+from time to time, mucem seems to break tilix and i have to use the reset
+command to fix it.
+
+=cut
+
+set -ue
+WDIR=$( mktemp -d /tmp/mucen-XXXXXXXXX )
+cd $WDIR
+
+# Found contacts
+# mu cfind output: Desc Email
+# expected:        Desc <Email>
+{   mu cfind "$@" |
+    sed -r 's/(.*) (.*)/\1 <\2>/'
+} > .contacts
+
+touch  To Cc Bcc
+
+minus () {
+    cat * > $1
+    grep -vxFf "$@"
+}
+
+pick_contact () {
+    minus .selected .contacts |
+        pick >> $append
+}
+
+printf "%s\n" * > .can
+
+while append=$( < .can pick ); do
+    while pick_contact; do :
+    done
+done
+
+grep -H . *|sed 's/:/: /'
+rm -rf $WDIR
+
+
+
