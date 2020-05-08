@@ -1,0 +1,3 @@
+mru-vaccum: mru-vaccum.cr
+    crystal build --release mru-vaccum.cr
+
