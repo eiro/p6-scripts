@@ -5,7 +5,6 @@ keywords: []
 author: Marc Chantreux
 ---
 
-* make the crystal version work
 * improve the manpage quality
   * find the good mdoc tags
   * render pdf to see how nice it renders
