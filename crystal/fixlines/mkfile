@@ -1,0 +1,13 @@
+all:V: fixlines.cr fixes
+    seq 5 |tee A > B
+    crystal ./fixlines.cr < fixes
+    grep -n . A B
+
+clean:V:
+    rm -rf fixlines A B
+
+fixlines: fixlines.cr
+    crystal build --release fixlines.cr
+
+readme.md: fixlines.1
+    mandoc -Tmarkdown fixlines.1 > readme.md

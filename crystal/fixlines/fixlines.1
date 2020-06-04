@@ -1,0 +1,37 @@
+.Dd June 5, 2020
+.Dt FIXLINES 1
+\" what's the point? also: what if the program is portable ?
+\" .Os [OPERATING_SYSTEM] [version/release]
+.Sh NAME
+.Nm fixlines
+.Nd a simple multiple files patch system
+.Sh SYNOPSIS
+.Nm fixlines
+.Ar files ...
+.Sh DESCRIPTION
+\." input sample filename:linenumber:content
+\." input sample grep -n
+
+fixlines is a filter that behave as a reverse
+of "grep -Hn" filter so
+
+    <<. fixlines
+    data/A:3:hello
+    data/A:5:world
+    data/A:3:hello
+    data/A:5:world
+    .
+
+is equivalent to
+
+    sed -i 3ihello data/A
+    sed -i 5iworld data/A
+    sed -i 3ihello data/B
+    sed -i 5iworld data/B
+
+it was originaly writen as a vi companion
+
+    :r!grep -N foo *
+    [edit, edit, edit ...]
+    :%!fixlines
+
