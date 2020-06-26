@@ -1,3 +1,5 @@
+# vim: noet ts=4 sts=4 sw=4 ft=zsh
+
 netdrive/ftp () curlftpfs $1:t:r "$@"
 netdrive/ssh () sshfs $1:t:r\: "$@"
 
