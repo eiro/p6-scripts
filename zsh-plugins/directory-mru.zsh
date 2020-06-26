@@ -1,8 +1,7 @@
 directory-mru/hook/chpwd () { l $PWD >> ~/.was-pwd }
 
 directory-mru/menu () {
-	mru-vaccum ~/.was-pwd
-	directory-mru/vaccum
+	mru-vaccum ~/.was-pwd | sponge ~/.was-pwd
 	# sk in history with most recent first in mind
 	# (if you want to remove the 100 oldest: sed -i 1,100d ~/.was-pwd)
 	local it
