@@ -1,13 +1,27 @@
 #! /usr/bin/perl
-use Eirotic;
+use Sympatic;
 use Net::Netrc;
-say $_//'' for Net::Netrc->lookup(@ARGV)->lpa;
 
-__END__
+my $muttrc_fmt='
+set smtp_url=smtps://%s
+set smtp_pass=%s
+';
 
-=SYNOPSIS
+my %doable_for =
+( -muttrc => sub {
+        my $credentials = Net::Netrc->lookup(@_)
+            or die join " ", "can't get credentials for ", @_;
+        printf $muttrc_fmt
+        , ( join '@', reverse  @_ )
+        , $c->password;
 
-netrcq, give a machine, get login password and account name from your C<~/.netrc> file.
-(read C<man netrc>).
+    }
+);
 
+my $action = $doable_for{$ARGV[0]} or do {
+    say $_//'' for Net::Netrc->lookup(@ARGV)->lpa;
+    exit;
+};
 
+shift @ARGV;
+$action->(@ARGV);
