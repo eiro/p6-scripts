@@ -13,7 +13,7 @@ my %doable_for =
             or die join " ", "can't get credentials for ", @_;
         printf $muttrc_fmt
         , ( join '@', reverse  @_ )
-        , $c->password;
+        , $credentials->password;
 
     }
 );
