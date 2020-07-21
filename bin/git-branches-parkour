@@ -8,12 +8,11 @@ git branch --all | sed -r '
     /^[*]/d         # skip current branch
     /-[>]/d         # skip references
     s/^ *//         # remove leading spaces
-    # if remote branch, track it with a local
-    # branch named _remote_branch
-    # as example:
-    # existing remote:
+    # if remote branch, track it in a local so for
     #    remotes/origin/perltidy
-    # will lead to creation of local:
+    # the expected git command
+    #    git checkout --track origin/perltidy -b _origin_perltidy_
+    # will lead to creation of local
     #    _origin_perltidy
-    s,remotes/([^/]+)/,--track -b _\1_,
+    s,remotes/(([^/]+)/(\S+)),--track \1 -b _\2_\3,
 '  | fzy | xargs -r git checkout
