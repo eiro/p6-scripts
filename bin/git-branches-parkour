@@ -1,0 +1,19 @@
+#! /bin/dash
+
+# jump between git branches like a ninja.
+# alias suggestions:
+# co (checkout), gbp (git branch parkour), bn (branch ninja)
+
+git branch --all | sed -r '
+    /^[*]/d         # skip current branch
+    /-[>]/d         # skip references
+    s/^ *//         # remove leading spaces
+    # if remote branch, track it with a local
+    # branch named _remote_branch
+    # as example:
+    # existing remote:
+    #    remotes/origin/perltidy
+    # will lead to creation of local:
+    #    _origin_perltidy
+    s,remotes/([^/]+)/,--track -b _\1_,
+'  | fzy | xargs -r git checkout
