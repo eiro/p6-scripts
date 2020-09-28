@@ -15,37 +15,40 @@ ps1-into-git-repo\? ()
 ps1-update () {
 	local it
 	ps1-updatable\? || return
+	(( $+TMUX_PANE )) || {
+		PS1='%F{white}%K{red}%B🕱 ⚠ better call tmux ▶%b%k%f '
+		return
+	}
+
 	GOTMAIL="$(
 		set -- ~/local/mail/^Trash/new/*(N:h:h:t)
 		test -n "$*" && echo $( l $@ | uniq -c ))"
 	local it= branch=
+	PS2="%F{black}▒░%f"
+	PS1="%K{black}▒░%(?.%F{green}$icons[OK_ICON].%F{red}$icons[FAIL_ICON])%f%k$(ps -Csshd hopid|wc -l)👀${GOTMAIL:+ 📨} ▷ "
+
+	print -Pv 1 "%n@%m%~"
+	{ shush2 git rev-parse --abbrev-ref HEAD | read branch } && {
+		print -Pv 1 " $1  $branch ±$( g s | wc -l ) files "
+	}
+	tmux set -g status-left-length $#1
+	tmux set -g status-left $1
+	# tmux set -g status-left "${(e%):-#[bg=white,fg=black] #[bg=blue] $*}"
+	return
 	local doing_this="$( tac ~/.je | sed  's/.\{17\}//;q' )"
 	if [[ stop = $doing_this ]] {
 		doing_this="%B%K{red}%F{white}▒ NO ACTIVE TASK ▒%f%k%b"
 	} else {
 		# TODO: make it a library
-		local graph_range=.▁▂▃▄▅▆▇█
+		# local graph_range=.▁▂▃▄▅▆▇█
 		# digraphs lb et RB
 		# this is a fake remaining bar just to let you remember
 		# how awesome it could be to have one!
-		doing_this="▐%F{green}▒▒▒▒%F{gray}▒▒▌%f $doing_this"
+		# doing_this="▐%F{green}▒▒▒▒%F{gray}▒▒▌%f $doing_this"
 	}
-	PS2="▒░ ▷ "
-    # it+=" 📝 (+$( sed '/^$/q' ~p/start |wc -l)) $doing_this "
-	# it+=$'\n'
-    # argv=( yellow/black "▒░ %~" )
-	local date
-	# print -Pv date '(?.%F{green}$icons[OK_ICON].%F{red}$icons[FAIL_ICON]) %D %T '
-	argv+=(
-		white/black
-		"░ ${TMUX_PANE:+ 📺${TMUX_PANE#%} }${GOTMAIL:+ 📨 }"'%(?.%F{green}$icons[OK_ICON].%F{red}$icons[FAIL_ICON])%f %2~'
-	)
-    { shush2 git rev-parse --abbrev-ref HEAD | read branch } &&
-        argv+=( black/white "  $branch ± $( g s | wc -l ) files" )
-    breadcrumb/colored $@
 	# test -s ~/.notif && it+=$'\n'"▒░ 📝%F{red}$(< ~/.notif ) %f"
-	it+=$'\n'$PS2
-    PS1="▒$it"
+	# it+=$'\n'$PS2
+    # PS1="▒$it"
     # use the whole line ?
 	# # PS1="%K{blue}%F{white}$infos${(l:$[COLUMNS-$#infos - 2]:: :):-}
 }
