@@ -37,8 +37,8 @@ command to fix it.
 =cut
 
 set -ue
-WDIR=$( mktemp -d /tmp/mucen-XXXXXXXXX )
-cd $WDIR
+the=$( mktemp -d /tmp/mucen-XXXXXXXXX )
+cd $the
 
 # Found contacts
 # mu cfind output: Desc Email
@@ -49,25 +49,27 @@ cd $WDIR
 
 touch  To Cc Bcc
 
+p () pick -XK "$@"
+p () fzy
+
 minus () {
     cat * > $1
     grep -vxFf "$@"
 }
 
 pick_contact () {
-    minus .selected .contacts |
-        pick >> $append
+    minus .selected .contacts | p >> $append
 }
 
 printf "%s\n" * > .can
 
-while append=$( < .can pick ); do
+while append=$( < .can p ); do
     while pick_contact; do :
     done
 done
 
 grep -H . *|sed 's/:/: /'
-rm -rf $WDIR
+rm -rf $the
 
 
 
