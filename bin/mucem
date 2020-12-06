@@ -37,6 +37,11 @@ command to fix it.
 =cut
 
 set -ue
+if test "x${1:-}" = "x-h"; then
+    perldoc $0
+    exit
+fi
+
 the=$( mktemp -d /tmp/mucen-XXXXXXXXX )
 cd $the
 
