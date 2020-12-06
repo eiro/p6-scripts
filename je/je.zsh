@@ -1,13 +1,16 @@
 # vim: noet ts=4
 
-je/liste () {
-	awk -F"\t" -vdesc=2 '{print $desc}' "$@"|sort -u
-}
+je_liste () { cut -f2 -d"	" "$@" | sort -u ; }
 
-je/continue  () {
-	je/liste ~/.je     |
-	fzf                |
-	read it
+je () {
+	local it=$(
+		case "$*" in
+			('') je_liste ~/.je | fzy  ;;
+			(*)  echo "$*"      | vipe ;;
+		esac
+	)
+	test -n "$it" &&
+		date +"%F %H:%M	$it" >> ~/.je
 }
 
 je/commence  () {
