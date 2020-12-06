@@ -1,7 +1,7 @@
 ---
 vim: et ts=2 sts=2 sw=2
 title: je, parceque je le vaut bien
-author: Marc Chantreux <me@me.me>
+author: Marc Chantreux
 ---
 
 # dependencies
