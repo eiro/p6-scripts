@@ -6,7 +6,7 @@ author: Marc Chantreux
 
 # dependencies
 
-you need `vipe` from `moreutils` package and `fzf`
+you need `vipe` from `moreutils` package and `fzy`
 
 # how-to
 
