@@ -1,0 +1,25 @@
+use Sympatic -oo;
+use Email::Folder;
+use MIME::QuotedPrint;
+# use open qw( :std :utf8 );
+
+fun read_email ( $file ) {
+    Email::Simple->new
+        ( ( path($file)     || die "$file isn't a path")
+                ->slurp_raw || die "no content for $file" )
+}
+
+my %messages_for;
+
+for (@ARGV) {
+    my $email = read_email $_;
+    push @{ $messages_for{ path($_)->parent->parent->basename } //=[] }
+    , join '│ '
+    , (sprintf '%-40.40s' , decode_qp $email->header('From'))
+    , (sprintf '%.50s'    , decode_qp $email->header('Subject'))
+}
+
+map  { say for "------- $_ ", @{ $messages_for{$_} }     }
+sort { @{ $messages_for{$a} } cmp @{ $messages_for{$b} } }
+keys %messages_for;
+
