@@ -1,7 +1,6 @@
 ---
 vim: et ts=2 sts=2 sw=2
 title: je, parceque je le vaut bien
-keywords: please use pandoc, github!
 author: Marc Chantreux <me@me.me>
 ---
 
