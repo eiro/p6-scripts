@@ -55,10 +55,10 @@ cd $the
     '
 } > .contacts
 
-touch  To Cc Bcc
-
-p () pick -XK "$@"
-p () fzy
+set To Cc Bcc
+touch $@
+printf "%s\n" $@ > .can
+menu () fzy
 
 minus () {
     cat * > $1
@@ -66,18 +66,18 @@ minus () {
 }
 
 pick_contact () {
-    minus .selected .contacts | p >> $append
+    minus .selected .contacts |
+        menu >> $append
 }
 
-printf "%s\n" * > .can
-
-while append=$( < .can p ); do
+pick_any () {
     while pick_contact; do :
     done
-done
+}
+
+append=To pick_any
+while append=$( < .can menu ); do pick_any ; done
 
 grep -H . *|sed 's/:/: /'
 rm -rf $the
-
-
 
