@@ -14,7 +14,7 @@ je () {
 }
 
 je_sum () {
-    the=$(mktemp -d)
+	local the=$(mktemp -d)
     mkfifo $the/report $the/tasks
     < $the/report cut -f2 > $the/tasks&
     cat "$@"                |
