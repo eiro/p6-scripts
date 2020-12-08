@@ -17,7 +17,7 @@ je_sum () {
 	local the=$(mktemp -d)
     mkfifo $the/report $the/tasks
     < $the/report cut -f2 > $the/tasks&
-    cat "$@"                |
+	sed '/^ *[^#]/!d' "$@"  |
         tee $the/report     |
         cut -f1             |
         date +%s -f-        |
