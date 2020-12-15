@@ -20,11 +20,12 @@ je_sum () {
 	local the=$(mktemp -d)
 	mkfifo $the/report $the/tasks
 	< $the/report cut -f2 > $the/tasks&
-	sed '/^ *[^#]/!d' "$@"  |
-		tee $the/report     |
-		cut -f1             |
-		date +%s -f-        |
-		paste - $the/tasks  |
+	{ sed '/^ *[^#]/!d' "$@"
+		je_rapporte stop
+	} | tee $the/report    |
+		cut -f1            |
+		date +%s -f-       |
+		paste - $the/tasks |
 		awk -F'\t' -vOFS='\t' -vstop=stop -vOFMT='%.3g' -vts=1 -vtask=2 '
 			start {
 				did[cur] += $ts - start
