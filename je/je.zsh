@@ -1,19 +1,18 @@
 # vim: noet ts=4
 
-je_liste () {
-	cut -f2 -d"	" "$@" |
-		sort -u
-}
+je_rapporte () date +"%F %H:%M	$*"
 
 je () {
-	local it=$(
+	local it="$(
 		case "$*" in
-			('') je_liste ~/.je | fzy  ;;
-			(*)  echo "$*"      | vipe ;;
+			('') < ~/.je cut -f2 -d"	" |
+				sort -u |
+				fzy
+			;;
+			(*)  echo "$*" | vipe ;;
 		esac
-	)
-	test -n "$it" &&
-		date +"%F %H:%M	$it" >> ~/.je
+	)"
+	test -n "$it" && je_rapporte "$it" >> ~/.je
 }
 
 je_sum () {
