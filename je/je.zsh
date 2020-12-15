@@ -35,7 +35,17 @@ je_sum () {
 				}
 			}
 			{ start=$ts ; cur=$task }
-			END { for (d in did) print d,did[d]/3600 }
+			END { for (d in did) print did[d]/3600,d }
 		'
 	rm -rf $the
+}
+
+je_me_barre () {
+	je_sum < ~/.je|sort -rn| awk -F'\t' '
+		{ bar=""; s=0
+			while (s++ < $1) bar=bar"▄"
+			while (s++ < 10) bar=" "bar
+			print "[37m"bar"│[39m "$2" ("$1")"
+		}
+	'
 }
