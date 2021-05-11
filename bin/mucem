@@ -48,11 +48,11 @@ cd $the
 # Found contacts
 # mu cfind output: Desc Email
 # expected:        Desc <Email>
-{   mu cfind "$@" |
-    sed -r '
+{   mu cfind "$@" | sed -r '
         s/,/;/g # , is a separator between recipients
         s/(.*) (.*)/\1 <\2>/
     '
+    awk '$1 ~ /^alias$/ {print $2}' ~/.muttrc
 } > .contacts
 
 set To Cc Bcc
