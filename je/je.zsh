@@ -2,17 +2,23 @@
 
 je_rapporte () date +"%F %H:%M	$*"
 
+# examples :
+# <<. je_dis
+# -1day 1854;stop
+# today 1000;rh,medical
+# .
+je_dis () {
+	sed '
+		s/^/-d/
+		s/;/\n+%F %H:%M	/g
+	'|xargs -rd'\n' -n2 date
+}
+
 je () {
-	local it="$(
-		case "$*" in
-			('') < ~/.je cut -f2 -d"	" |
-				sort -u |
-				fzy
-			;;
-			(*)  echo "$*" | vipe ;;
-		esac
-	)"
-	test -n "$it" && je_rapporte "$it" >> ~/.je
+	< ~/.je cut -f2 -d"	" |
+		sort -u | fzy   |
+		sed 's/^/now;/' |
+		je_dis >>~/.je
 }
 
 je_sum () {
