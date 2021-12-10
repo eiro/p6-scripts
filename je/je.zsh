@@ -1,4 +1,4 @@
-# vim: noet ts=4
+# vim: noet
 
 je_rapporte () date +"%F %H:%M	$*"
 
